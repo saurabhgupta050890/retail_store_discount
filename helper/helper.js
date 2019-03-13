@@ -44,17 +44,18 @@ module.exports = {
     discountService.addUserDiscount(config.USER_ROLES.CUSTOMER, CustomerDiscount);
     discountService.addUserDiscount(config.USER_ROLES.AFFILIATE, AffiliateDiscount);
   },
-  printBill: function(bill) {
-    let totalDiscount = discountService.calculateDiscount(bill);
-    let netPayment = bill.getGrossTotal() - totalDiscount;
-    console.log("-------------------------------");
+  /* eslint no-console: ["error", { allow: ["log"] }] */
+  printBill(bill) {
+    const totalDiscount = discountService.calculateDiscount(bill);
+    const netPayment = bill.getGrossTotal() - totalDiscount;
+    console.log('------------------------------');
     console.log(`BILL ID: ${bill.id}`);
     console.log(`Customer: ${bill.user.name}`);
-    console.log("-------------------------------");
+    console.log('------------------------------');
     console.log(`Total Bill: ${bill.getGrossTotal()}`);
     console.log(`Total Discount: ${totalDiscount}`);
-    console.log("-------------------------------");
+    console.log('------------------------------');
     console.log(`Net Amount: ${netPayment}`);
-    console.log("-------------------------------");
-  }
+    console.log('------------------------------');
+  },
 };
