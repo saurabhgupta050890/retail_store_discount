@@ -4,8 +4,21 @@
   "description": "A program to calculate a retail discount ",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha",
+    "test-with-coverage": "nyc --reporter=html mocha",
+    "lint": "./node_modules/.bin/eslint .",
+    "sample": "node main.js"
   },
   "author": "Saurabh Gupta",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.15.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0"
+  }
 }

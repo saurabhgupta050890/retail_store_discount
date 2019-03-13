@@ -1,61 +1,77 @@
-const config = require("./constants");
-
 // A simulated store to hold discount data
 // In real world this can be fetched from a database
-let generalDiscounts = new Map();
-let userDiscounts = new Map();
+const generalDiscounts = new Map();
+const userDiscounts = new Map();
 
-const addGeneralDiscount = function(name, discount) {
-  if (availableDiscounts.has(name)) throw Error("Discount already present");
+const addGeneralDiscount = function addGeneralDiscount(discount) {
+  if (generalDiscounts.has(discount.name)) throw Error('Discount already present');
 
-  generalDiscounts.set(name, discount);
+  generalDiscounts.set(discount.name, discount);
 };
 
-const addUserDiscount = function(userRole, discountName) {
+const addUserDiscount = function addUserDiscount(userRole, discountName) {
   if (!userDiscounts.has(userRole)) {
     userDiscounts.set(userRole, [discountName]);
   } else {
-    let currentDiscount = userDiscount.get(userRole);
+    const currentDiscount = userDiscounts.get(userRole);
     currentDiscount.push(discountName);
     userDiscounts.set(userRole, currentDiscount);
   }
 };
 
-const calculateDiscount = function(bill) {
-  let totalDiscounts = 0;
-  let userDiscount = getMaxUserDiscount(bill.user);
-
-  if (userDiscount) {
-    //Calculate total user discount based on each item
-    bill.getItemList().forEach(item => {
-      let discount = userDiscount.getDiscount(
-        item.getItemTotalAmount(),
-        bill.user,
-        item.type
-      );
-      totalDiscounts += discount;
-    });
-  }
-
-  generalDiscounts.forEach(discount => {
-    let discount = discount.getDiscount(bill.getGrossTotal());
-    totalDiscounts += discount;
-  });
-
-  return totalDiscounts;
+const getGeneralDiscountList = function getGeneralDiscountList() {
+  return generalDiscounts;
 };
 
-const getMaxUserDiscount = function(user) {
+const getUserDiscountList = function getUserDiscountList() {
+  return userDiscounts;
+};
+
+const getMaxUserDiscount = function getMaxUserDiscount(user) {
   if (userDiscounts.has(user.role)) {
-    let discounts = userDiscounts.get(user.role);
+    const discounts = userDiscounts.get(user.role);
     let maxDiscount = { amount: 0 };
-    discounts.forEach(discount => {
+    discounts.forEach((discount) => {
       if (discount.amount > maxDiscount.amount) {
         maxDiscount = discount;
       }
     });
     return maxDiscount;
-  } else {
-    return null;
   }
+  return null;
+};
+
+const calculateDiscount = function calculateDiscount(bill) {
+  let totalDiscounts = 0;
+  const userDiscount = getMaxUserDiscount(bill.user);
+
+  if (userDiscount) {
+    // Calculate total user discount based on each item
+    bill.getItemList().forEach((item) => {
+      const discount = userDiscount.getDiscount(
+        item.getItemTotalAmount(),
+        bill.user,
+        item.type,
+      );
+      totalDiscounts += discount;
+    });
+  }
+
+  // Assumption: Apply bill discount on the remaining bill amount after applying
+  generalDiscounts.forEach((discount) => {
+    const netDiscount = discount.getDiscount(
+      bill.getGrossTotal() - totalDiscounts,
+    );
+    totalDiscounts += netDiscount;
+  });
+
+  return totalDiscounts;
+};
+
+module.exports = {
+  addGeneralDiscount,
+  addUserDiscount,
+  calculateDiscount,
+  getGeneralDiscountList,
+  getUserDiscountList,
 };

@@ -1,5 +1,5 @@
 class Discount {
-  constructor(name, amount, condition = () => true, type = "GENERAL") {
+  constructor(name, amount, condition = () => true, type = 'GENERAL') {
     this.name = name;
     this.amount = amount;
     this.type = type;
@@ -14,13 +14,14 @@ class Discount {
 
 class PercentageDiscount extends Discount {
   constructor(name, amount, condition) {
-    super(name, amount, condition, "PERCENTAGE");
+    super(name, amount, condition, 'PERCENTAGE');
   }
 
   getDiscount(billAmount, user, itemType) {
     if (this.condition(user, itemType)) {
-      return billAmount * ((100 - this.amount) / 100);
+      return Math.floor(billAmount * ((100 - this.amount) / 100));
     }
+    return 0;
   }
 }
 
@@ -31,12 +32,12 @@ class BillDiscount extends Discount {
   }
 
   getDiscount(billAmount) {
-    return Math.floor(billAmount / this.repeatValue) * this.amount;
+    return Math.floor(Math.floor(billAmount / this.repeatValue) * this.amount);
   }
 }
 
 module.exports = {
-  Discount: Discount,
-  BillDiscount: BillDiscount,
-  PercentageDiscount: PercentageDiscount
+  Discount,
+  BillDiscount,
+  PercentageDiscount,
 };
