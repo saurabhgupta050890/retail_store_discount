@@ -1,37 +1,42 @@
 class Discount {
-  constructor(name, amount) {
-    this.name = name; 
+  constructor(name, amount, condition = () => true, type = "GENERAL") {
+    this.name = name;
     this.amount = amount;
+    this.type = type;
+    this.condition = condition;
   }
 
-  getDiscount(userType, billAmount) {
-      return billAmount - this.amount;
+  getDiscount(billAmount) {
+    return billAmount - this.amount;
   }
 }
 
+
 class PercentageDiscount extends Discount {
-  constructor() {
-    super();
+  constructor(name, amount, condition) {
+    super(name, amount, condition, "PERCENTAGE");
   }
 
-  getDiscount(userType, billAmount, itemType) {
+  getDiscount(billAmount, user, itemType) {
+    if (this.condition(user, itemType)) {
       return billAmount * ((100 - this.amount) / 100);
+    }
   }
 }
 
 class BillDiscount extends Discount {
-  constructor(repeatValue) {
-    super();
+  constructor(name, amount, repeatValue) {
+    super(name, amount);
     this.repeatValue = repeatValue;
   }
 
-  getDiscount(userType, billAmount) {
-      return Math.floor(billAmount / this.repeatValue)*this.amount;
+  getDiscount(billAmount) {
+    return Math.floor(billAmount / this.repeatValue) * this.amount;
   }
 }
 
 module.exports = {
-    Discount: Discount,
-    BillDiscount: BillDiscount,
-    PercentageDiscount: PercentageDiscount
-}
+  Discount: Discount,
+  BillDiscount: BillDiscount,
+  PercentageDiscount: PercentageDiscount
+};

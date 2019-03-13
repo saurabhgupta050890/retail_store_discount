@@ -1,0 +1,12 @@
+module.exports = {
+    USER_ROLES: {
+        EMPLOYEE: "USER_EMPLOYEE",
+        CUSTOMER: "USER_CUSTOMER", 
+        AFFILIATE: "USER_AFFILIATE"
+    },
+    ITEM_TYPES: {
+        GROCERY: "ITEM_GROCERY",
+        ELECTRONIC: "ITEM_ELECTRONIC",
+        FURNITURE: "ITEM_FURNITURE"
+    }
+}
